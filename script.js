@@ -338,9 +338,25 @@ function quicTlsClientHelloToFrames(clientHello, level = 0) {
             4: [0, 1, 38, Infinity, 0, true],
         }
         let [p1s, p1e, p2s, p2e, dropTail, skipZeroes] = cutPresets[level];
+
         if (skipZeroes) {
             const h8u = new Uint8Array(clientHello);
-            while (h8u[p2s] === 0) p2s++;
+            let skipped = 0;
+            while (skipped < 2 && h8u[p2s] === 0) {
+                p2s++;
+                skipped++;
+            }
+        }        
+        
+        
+        if (skipZeroes) {
+            const h8u = new Uint8Array(clientHello);
+//            while (h8u[p2s] === 0) p2s++;
+            let skipped = 0;
+            while (skipped < 2 && h8u[p2s] === 0) {
+                p2s++;
+                skipped++;
+            }
         }
         payload = quicConcatBuffers([
             quicCryptoFrame(clientHello.slice(p1s, p1e), p1s),
